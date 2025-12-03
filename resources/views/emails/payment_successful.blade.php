@@ -23,7 +23,7 @@
         
         <p>Kami telah menerima pembayaran Anda sebesar Rp {{ number_format($order->total_amount, 0, ',', '.') }}</p>
 
-        <p><strong>Metode Pembayaran:</strong> {{ $order->payment_method }}</p>
+        <p><strong>Metode Pembayaran:</strong> {{ $order->payment_method ?? 'Midtrans' }}</p>
         <p><strong>Tanggal Pembayaran:</strong> {{ $order->updated_at->format('d M Y H:i') }}</p>
 
         <p>Pesanan Anda akan segera disiapkan dan disampaikan ke alamat:</p>

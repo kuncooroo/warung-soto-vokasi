@@ -27,9 +27,10 @@
             <p><strong>Tanggal:</strong> {{ $order->created_at->format('d M Y H:i') }}</p>
 
             <h3>Item Pesanan</h3>
+            {{-- Pastikan relasi items sudah dimuat --}}
             @foreach($order->items as $item)
             <div class="item">
-                <strong>{{ $item->product->name }}</strong><br>
+                <strong>{{ $item->product->name ?? 'Produk' }}</strong><br>
                 Jumlah: {{ $item->quantity }} x Rp {{ number_format($item->price, 0, ',', '.') }}<br>
                 Subtotal: Rp {{ number_format($item->subtotal, 0, ',', '.') }}
             </div>
@@ -48,7 +49,7 @@
 
         <div class="footer">
             <p>Status pembayaran: <strong>{{ ucfirst($order->payment_status) }}</strong></p>
-            <p>&copy; 2025 Warung Soto Vokasi. Semua hak dilindungi.</p>
+            <p>&copy; {{ date('Y') }} Warung Soto Vokasi. Semua hak dilindungi.</p>
         </div>
     </div>
 </body>

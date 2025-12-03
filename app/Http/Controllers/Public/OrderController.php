@@ -8,6 +8,11 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Services\MidtransService;
 use Illuminate\Http\Request;
+// Tambahkan Import Ini
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmationMail;
+use App\Mail\PaymentSuccessMail;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -16,6 +21,26 @@ class OrderController extends Controller
     public function __construct(MidtransService $midtransService)
     {
         $this->midtransService = $midtransService;
+    }
+
+    public function index()
+    {
+        $orders = Order::where('customer_email', auth()->user()->email)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('public.orders.index', [
+            'orders' => $orders
+        ]);
+    }
+
+    public function success(Order $order)
+    {
+        if ($order->customer_email !== auth()->user()->email) {
+            abort(403);
+        }
+
+        return view('public.orders.success', compact('order'));
     }
 
     public function checkout(Request $request)
@@ -64,7 +89,6 @@ class OrderController extends Controller
         $items = json_decode($request->items, true);
         $totalAmount = 0;
 
-        // Validasi items dan hitung total
         foreach ($items as $item) {
             $product = Product::find($item['product_id']);
             if (!$product) {
@@ -73,7 +97,6 @@ class OrderController extends Controller
             $totalAmount += $product->price * $item['quantity'];
         }
 
-        // Create order
         $order = new Order();
         $order->generateOrderNumber();
         $order->customer_name = $request->customer_name;
@@ -82,9 +105,9 @@ class OrderController extends Controller
         $order->customer_address = $request->customer_address;
         $order->total_amount = $totalAmount;
         $order->notes = $request->notes;
+        $order->payment_status = 'pending';
         $order->save();
 
-        // Create order items
         foreach ($items as $item) {
             $product = Product::find($item['product_id']);
             OrderItem::create([
@@ -96,7 +119,12 @@ class OrderController extends Controller
             ]);
         }
 
-        // Get Midtrans token
+        try {
+            Mail::to($order->customer_email)->send(new OrderConfirmationMail($order));
+        } catch (\Exception $e) {
+            Log::error('Gagal mengirim email konfirmasi order: ' . $e->getMessage());
+        }
+
         $midtransResponse = $this->midtransService->createTransaction($order);
 
         if (!$midtransResponse['success']) {
@@ -116,7 +144,33 @@ class OrderController extends Controller
     public function paymentCallback(Request $request)
     {
         $notification = $request->all();
+
         $result = $this->midtransService->handleCallback($notification);
+
+        $orderId = $notification['order_id'] ?? null;
+
+        if ($orderId) {
+
+            Log::info('Callback received for Order ID: ' . $orderId);
+
+
+
+
+            $realOrderId = explode('-', $orderId)[0];
+
+            $order = Order::where('order_number', $realOrderId)->first();
+
+            if ($order && $order->payment_status == 'completed') {
+                try {
+                    Mail::to($order->customer_email)->send(new PaymentSuccessMail($order));
+                    Log::info('Email sukses bayar dikirim ke: ' . $order->customer_email);
+                } catch (\Exception $e) {
+                    Log::error('Gagal mengirim email sukses bayar: ' . $e->getMessage());
+                }
+            } else {
+                Log::warning('Email tidak dikirim. Status order: ' . ($order ? $order->payment_status : 'Order not found'));
+            }
+        }
 
         return response()->json($result);
     }
