@@ -62,39 +62,39 @@
             <!-- Gallery Grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <!-- Main Large Image -->
-                <div class="col-span-2 row-span-2">
-                    <div class="relative group overflow-hidden rounded-2xl h-full shadow-lg hover:shadow-2xl transition-all duration-300">
-                        <img src="{{ asset('images/gallery/gallery-1.jpg') }}" 
-                             alt="Gallery 1" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </div>
-                </div>
+                <div class="col-span-2 row-span-2 h-[400px]">
+    <div class="relative group overflow-hidden rounded-2xl h-full shadow-lg hover:shadow-2xl transition-all duration-300">
+        <img src="{{ asset('images/gallery/fotopaknya.jpeg') }}" 
+             alt="Gallery 1" 
+             class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </div>
+</div>
 
                 <!-- Small Images -->
                 <div class="relative group overflow-hidden rounded-2xl h-48 shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/gallery-2.jpg') }}" 
+                    <img src="{{ asset('images/gallery/makan.jpg') }}" 
                          alt="Gallery 2" 
                          class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
 
                 <div class="relative group overflow-hidden rounded-2xl h-48 shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/gallery-3.jpg') }}" 
+                    <img src="{{ asset('images/gallery/grobak.webp') }}" 
                          alt="Gallery 3" 
                          class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
 
                 <div class="relative group overflow-hidden rounded-2xl h-48 shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/gallery-4.jpg') }}" 
+                    <img src="{{ asset('images/gallery/soto_1.jpg') }}" 
                          alt="Gallery 4" 
                          class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
 
                 <div class="relative group overflow-hidden rounded-2xl h-48 shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/gallery-5.jpg') }}" 
+                    <img src="{{ asset('images/gallery/paklek.jpeg') }}" 
                          alt="Gallery 5" 
                          class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
