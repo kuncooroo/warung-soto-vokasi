@@ -20,6 +20,8 @@ use App\Http\Controllers\Public\ProductController as PublicProductController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\FaqController as PublicFaqController;
 use App\Http\Controllers\Public\OrderController as PublicOrderController;
+use App\Http\Controllers\Public\TestimonialController;
+
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])
@@ -50,8 +52,8 @@ Route::get('/menu', [PublicProductController::class, 'index'])->name('menu');
 Route::get('/menu/{product}', [PublicProductController::class, 'show'])->name('product.detail');
 Route::get('/contact', [ContactController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactController::class, 'storeContact'])->name('contact.store');
-Route::get('/testimonial', [ContactController::class, 'testimonial'])->name('testimonial');
-Route::post('/testimonial', [ContactController::class, 'storeTestimonial'])->name('testimonial.store');
+Route::get('/testimonial', [TestimonialController::class, 'index'])->name('testimonial');
+Route::post('/testimonial', [TestimonialController::class, 'store'])->name('testimonial.store');
 
 
 // ADMIN ROUTES
