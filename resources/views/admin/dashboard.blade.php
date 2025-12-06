@@ -81,7 +81,6 @@
             </div>
         </div>
 
-        <!-- Existing: Total Testimoni -->
         <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
             <div class="rounded-full p-4 bg-yellow-50 text-yellow-500 mr-4 flex-shrink-0">
                 <span class="text-2xl">⭐</span>
@@ -92,7 +91,6 @@
             </div>
         </div>
 
-        <!-- Existing: Pesan Baru -->
         <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
             <div class="rounded-full p-4 bg-blue-50 text-blue-500 mr-4 flex-shrink-0">
                 <span class="text-2xl">📧</span>
@@ -174,7 +172,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- 1. Daily Orders Chart (Bar/Area Style) ---
             var dailyLabels = {!! json_encode(array_keys($dailyOrders->toArray())) !!};
             var dailyData = {!! json_encode(array_values($dailyOrders->toArray())) !!};
 
@@ -185,7 +182,7 @@
                 }],
                 chart: {
                     height: 300,
-                    type: 'area', // Menggunakan style Area agar mirip Input 2
+                    type: 'area',
                     toolbar: {
                         show: false
                     }
@@ -222,8 +219,6 @@
             };
             new ApexCharts(document.querySelector("#dailyOrdersChart"), dailyOptions).render();
 
-
-            // --- 2. Revenue Chart (Line Style) ---
             var revenueLabels = {!! json_encode(array_keys($monthlyRevenue->toArray())) !!};
             var revenueData = {!! json_encode(array_values($monthlyRevenue->toArray())) !!};
 

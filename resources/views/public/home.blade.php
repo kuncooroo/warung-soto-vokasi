@@ -217,7 +217,6 @@
 
     <section class="py-20 bg-gray-50 overflow-hidden">
 
-        {{-- Header --}}
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative z-10">
             <div class="text-center">
                 <h2 class="text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-4">Apa Kata Mereka ?</h2>
@@ -241,7 +240,7 @@
             @endphp
 
             <div x-data="{
-                activeSlide: {{ $multiplier == 5 ? $originalCount * 2 : $originalCount }}, // Mulai dari set tengah
+                activeSlide: {{ $multiplier == 5 ? $originalCount * 2 : $originalCount }},
                 originalCount: {{ $originalCount }},
                 totalItems: {{ $totalLoopedCount }},
                 isMobile: window.innerWidth < 768,
@@ -250,42 +249,34 @@
                 autoplayInterval: null,
             
                 init() {
-                    // Listener Resize
                     window.addEventListener('resize', () => {
                         this.isMobile = window.innerWidth < 768;
                     });
             
-                    // Opsional: Jalankan Autoplay
                     this.startAutoplay();
                 },
             
                 startAutoplay() {
                     this.autoplayInterval = setInterval(() => {
                         this.next();
-                    }, 4000); // Ganti slide setiap 4 detik
+                    }, 4000);
                 },
             
                 stopAutoplay() {
                     clearInterval(this.autoplayInterval);
                 },
             
-                // LOGIKA INFINITE CIRCULAR
                 next() {
                     if (this.isAnimating) return;
                     this.isAnimating = true;
             
-                    // Geser ke kanan
                     this.activeSlide++;
             
-                    // Tunggu animasi CSS selesai (700ms), lalu cek posisi
                     setTimeout(() => {
-                        // Jika sudah masuk ke area Buffer Kanan (setelah set utama)
-                        // Kita snap balik ke awal Set Utama tanpa animasi
                         if (this.activeSlide >= this.totalItems - this.originalCount) {
-                            this.disableTransition = true; // Matikan transisi
-                            this.activeSlide = this.activeSlide - this.originalCount; // Mundur 1 set
+                            this.disableTransition = true; 
+                            this.activeSlide = this.activeSlide - this.originalCount; 
             
-                            // Nyalakan transisi lagi di tick berikutnya
                             this.$nextTick(() => {
                                 setTimeout(() => { this.disableTransition = false; }, 50);
                             });
@@ -298,11 +289,9 @@
                     if (this.isAnimating) return;
                     this.isAnimating = true;
             
-                    // Geser ke kiri
                     this.activeSlide--;
             
                     setTimeout(() => {
-                        // Jika sudah masuk ke area Buffer Kiri (sebelum set utama)
                         if (this.activeSlide < this.originalCount) {
                             this.disableTransition = true;
                             this.activeSlide = this.activeSlide + this.originalCount; // Maju 1 set
@@ -315,12 +304,7 @@
                     }, 700);
                 },
             
-                // Jump to specific slide (Logic disesuaikan ke set tengah)
                 goToSlide(index) {
-                    // Cari index ekuivalen di set tengah
-                    // Index input 0..originalCount-1
-                    // Kita mau ke buffer tengah, jadi index + originalCount (jika multiplier 3)
-                    // Atau index + (originalCount * 2) jika multiplier 5
                     let offset = {{ $multiplier == 5 ? 2 : 1 }};
                     this.activeSlide = index + (this.originalCount * offset);
                     this.stopAutoplay();
@@ -389,13 +373,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div
-                                                class="absolute -bottom-3 -right-3 bg-[#D98718] text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md border-4 border-white z-20 transition-transform duration-300 group-hover/card:rotate-12">
-                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z" />
-                                                </svg>
-                                            </div>
+                                    
                                         </div>
 
                                         <div class="mt-6 transition-colors duration-300">

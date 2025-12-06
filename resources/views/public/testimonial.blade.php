@@ -46,142 +46,48 @@
         </div>
     </section>
 
-    {{-- GALLERY SECTION - FULLSCREEN WITH 9 IMAGES --}}
     <section class="py-0 bg-gray-50 -mt-16">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            
-            <!-- Gallery Grid - 9 Images Total -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                
-                <!-- Main Large Image 1 (Kiri Atas) -->
-                <div class="col-span-2 row-span-2">
-                    <div class="relative group overflow-hidden rounded-2xl h-[400px] md:h-[600px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                        <img src="{{ asset('images/gallery/fotopaknya.jpeg') }}" 
-                             alt="Proses Pembuatan Soto" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div class="absolute bottom-6 left-6 text-white">
-                                
-                                
-                            </div>
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+
+            @php
+                $gallery = [
+                    ['img' => 'sotovokasi.jpg'],
+                    ['img' => 'pakde.jpeg'],
+                    ['img' => 'grobak.webp'],
+                    ['img' => 'soto_1.jpg'],
+                    ['img' => 'paklek.jpeg'],
+                    ['img' => 'hole.jpeg'],
+                    ['img' => 'kk.jpeg'],
+                    ['img' => 'makan.jpg'],
+                    ['img' => 'pak.jpeg'],
+                    ['img' => 'soto.jpg'],
+                ];
+            @endphp
+
+            @foreach ($gallery as $index => $g)
+                <div class="{{ in_array($index, [0, 7]) ? 'col-span-2 row-span-2' : '' }}">
+                    <div class="relative group overflow-hidden rounded-2xl
+                                {{ in_array($index, [0, 7]) ? 'h-[400px] md:h-[600px]' : 'h-[195px] md:h-[292px]' }}
+                                shadow-lg hover:shadow-2xl transition-all duration-300">
+
+                        <img src="{{ asset('images/gallery/' . $g['img']) }}"
+                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+
+                        <div class="absolute inset-0 
+                                    bg-gradient-to-t from-black/70 via-black/40 to-black/10
+                                    group-hover:opacity-100 opacity-80 
+                                    transition-opacity duration-300">
                         </div>
+
                     </div>
                 </div>
+            @endforeach
 
-                <!-- Small Image 1 (Kanan Atas 1) -->
-                <div class="relative group overflow-hidden rounded-2xl h-[195px] md:h-[292px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/pakde.jpeg') }}" 
-                         alt="Soto Nikmat" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute bottom-4 left-4 text-white">
-                            
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Small Image 2 (Kanan Atas 2) -->
-                <div class="relative group overflow-hidden rounded-2xl h-[195px] md:h-[292px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/grobak.webp') }}" 
-                         alt="Gerobak Warung" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute bottom-4 left-4 text-white">
-                            
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Small Image 3 (Kanan Bawah 1) -->
-                <div class="relative group overflow-hidden rounded-2xl h-[195px] md:h-[292px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/soto_1.jpg') }}" 
-                         alt="Menu Warung" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute bottom-4 left-4 text-white">
-                            
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Small Image 4 (Kanan Bawah 2) -->
-                <div class="relative group overflow-hidden rounded-2xl h-[195px] md:h-[292px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/paklek.jpeg') }}" 
-                         alt="Suasana Dapur" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute bottom-4 left-4 text-white">
-                            
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Small Image 5 (Bawah 1) -->
-                <div class="relative group overflow-hidden rounded-2xl h-[195px] md:h-[292px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/hole.jpeg') }}" 
-                         alt="Pelanggan Setia" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute bottom-4 left-4 text-white">
-                            
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Small Image 6 (Bawah 2) -->
-                <div class="relative group overflow-hidden rounded-2xl h-[195px] md:h-[292px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/kk.jpeg') }}" 
-                         alt="Suasana Warung" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute bottom-4 left-4 text-white">
-                            
-                        </div>
-                    </div>
-                </div>
-
-
-                 <div class="col-span-2 row-span-2">
-                    <div class="relative group overflow-hidden rounded-2xl h-[400px] md:h-[600px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                        <img src="{{ asset('images/gallery/makan.jpg') }}" 
-                             alt="Proses Pembuatan Soto" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div class="absolute bottom-6 left-6 text-white">
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Small Image 9 (Bawah Kanan) -->
-                <div class="relative group overflow-hidden rounded-2xl h-[195px] md:h-[292px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/pak.jpeg') }}" 
-                         alt="Proses Memasak" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute bottom-4 left-4 text-white">
-                            
-                        </div>
-                    </div>
-                </div>
-                <div class="relative group overflow-hidden rounded-2xl h-[195px] md:h-[292px] shadow-lg hover:shadow-2xl transition-all duration-300">
-                    <img src="{{ asset('images/gallery/soto.jpg') }}" 
-                         alt="Proses Memasak" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute bottom-4 left-4 text-white">
-                            
-                        </div>
-                    </div>
-                </div>
-                
-
-            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    {{-- DISPLAY EXISTING TESTIMONIALS (DATA DARI CONTROLLER) --}}
     @php
         $testimoniCount = $approvedTestimonials->count();
     @endphp
@@ -190,15 +96,12 @@
         <section class="py-20 bg-gray-50 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
-                <!-- Header Section -->
                 <div class="text-center mb-12">
                     <h2 class="text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-4">Testimoni Pelanggan Kami</h2>
                     <p class="text-gray-500 max-w-2xl mx-auto">Lihat apa kata mereka tentang Soto Vokasi</p>
                 </div>
 
-                <!-- Testimonial Cards Grid -->
                 <div class="relative" x-data="{ page: 0, perPage: 3, items: @js($approvedTestimonials) }">
-                    <!-- Navigation Buttons -->
                     <button @click="page = Math.max(0, page - 1)" 
                             x-show="page > 0"
                             class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-lg text-gray-600 hover:bg-[#A9333A] hover:text-white transition-all">
@@ -215,16 +118,13 @@
                         </svg>
                     </button>
 
-                    <!-- Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <template x-for="(item, index) in items.slice(page * perPage, (page + 1) * perPage)" :key="item.id || index">
                             <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                                <!-- Title -->
                                 <h3 class="text-xl font-bold text-gray-900 mb-3" 
                                     x-text="item.message.split(' ').slice(0, 2).join(' ') + '!'">
                                 </h3>
 
-                                <!-- Stars -->
                                 <div class="flex gap-1 mb-4">
                                     <template x-for="star in 5" :key="star">
                                         <svg class="w-5 h-5" :class="star <= item.rating ? 'text-yellow-400' : 'text-gray-200'" fill="currentColor" viewBox="0 0 20 20">
@@ -233,10 +133,8 @@
                                     </template>
                                 </div>
 
-                                <!-- Message -->
                                 <p class="text-gray-600 mb-6 line-clamp-3" x-text="item.message"></p>
 
-                                <!-- Customer Info -->
                                 <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
                                     <img :src="item.image ? `{{ asset('') }}${item.image}` : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(item.name) + '&background=f3f4f6&color=A9333A&size=80'"
                                          :alt="item.name"

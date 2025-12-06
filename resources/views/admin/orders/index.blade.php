@@ -1,66 +1,85 @@
 @extends('layouts.admin')
 
+@section('title', 'Daftar Pesanan')
+@section('header', 'Daftar Pesanan')
+
 @section('content')
-<div class="p-6">
-    <h2 class="text-2xl font-bold mb-4">Daftar Pesanan</h2>
 
-    <div class="bg-white shadow rounded-xl p-4">
-        <table class="w-full text-left">
-            <thead>
-                <tr class="border-b">
-                    <th class="py-3">Order #</th>
-                    <th class="py-3">Nama</th>
-                    <th class="py-3">Total</th>
-                    <th class="py-3">Pembayaran</th>
-                    <th class="py-3">Status</th>
-                    <th class="py-3">Aksi</th>
-                </tr>
-            </thead>
+<div class="mb-6 flex justify-between items-center">
+    <h3 class="text-xl font-bold text-gray-800">Kelola Pesanan</h3>
+</div>
 
-            <tbody>
-                @foreach ($orders as $order)
-                <tr class="border-b">
-                    <td class="py-3">{{ $order->order_number }}</td>
-                    <td class="py-3">{{ $order->customer_name }}</td>
-                    <td class="py-3 font-bold">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
+<div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+    <table class="w-full">
+        <thead class="bg-green-600 text-white">
+            <tr>
+                <th class="px-6 py-4 text-left text-sm font-semibold tracking-wide">Order #</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold tracking-wide">Nama</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold tracking-wide">Total</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold tracking-wide">Pembayaran</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold tracking-wide">Status</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold tracking-wide">Aksi</th>
+            </tr>
+        </thead>
 
-                    <td class="py-3">
-                        @if ($order->payment_status == 'paid')
-                        <span class="px-2 py-1 bg-green-100 text-green-600 rounded-lg text-xs">PAID</span>
-                        @else
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-lg text-xs">PENDING</span>
-                        @endif
-                    </td>
+        <tbody class="divide-y divide-gray-100">
+            @foreach ($orders as $order)
+            <tr class="hover:bg-green-50 transition duration-150">
 
-                    <td class="py-3">
-                        @php
-                            $colors = [
-                                'pending' => 'bg-gray-100 text-gray-600',
-                                'processing' => 'bg-blue-100 text-blue-600',
-                                'completed' => 'bg-green-100 text-green-600',
-                                'cancelled' => 'bg-red-100 text-red-600',
-                            ];
-                        @endphp
+                <td class="px-6 py-4 font-semibold text-gray-800">
+                    {{ $order->order_number }}
+                </td>
 
-                        <span class="px-2 py-1 rounded-lg text-xs {{ $colors[$order->order_status] ?? 'bg-gray-100 text-gray-600' }}">
-                            {{ ucfirst($order->order_status) }}
+                <td class="px-6 py-4 text-gray-700">
+                    {{ $order->customer_name }}
+                </td>
+
+                <td class="px-6 py-4 font-bold text-gray-900">
+                    Rp {{ number_format($order->total_amount, 0, ',', '.') }}
+                </td>
+
+                <td class="px-6 py-4">
+                    @if ($order->payment_status == 'paid')
+                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-md text-xs font-bold">
+                            PAID
                         </span>
-                    </td>
+                    @else
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-md text-xs font-bold">
+                            PENDING
+                        </span>
+                    @endif
+                </td>
 
-                    <td class="py-3">
-                        <a href="{{ route('admin.orders.show', $order->id) }}" 
-                           class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
-                           Detail
-                        </a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                <td class="px-6 py-4">
+                    @php
+                        $colors = [
+                            'pending' => 'bg-gray-100 text-gray-600',
+                            'processing' => 'bg-blue-100 text-blue-600',
+                            'completed' => 'bg-green-100 text-green-600',
+                            'cancelled' => 'bg-red-100 text-red-600',
+                        ];
+                    @endphp
 
-        <div class="mt-4">
-            {{ $orders->links() }}
-        </div>
+                    <span class="px-3 py-1 rounded-md text-xs font-bold {{ $colors[$order->order_status] ?? 'bg-gray-100 text-gray-600' }}">
+                        {{ ucfirst($order->order_status) }}
+                    </span>
+                </td>
+
+                <td class="px-6 py-4 text-center">
+                    <a href="{{ route('admin.orders.show', $order->id) }}"
+                        class="px-3 py-1 bg-green-600 text-white rounded-md text-xs font-semibold hover:bg-green-700 transition shadow-sm">
+                        Detail
+                    </a>
+                </td>
+
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <div class="px-6 py-4 bg-gray-50">
+        {{ $orders->links() }}
     </div>
 </div>
+
 @endsection
