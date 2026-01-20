@@ -57,10 +57,10 @@ Route::middleware(['auth', 'check.profile'])->group(function () {
     Route::get('/orders', [PublicOrderController::class, 'index'])->name('orders.index');
 
 
-    Route::get('/orders/success/{order}', [PublicOrderController::class, 'success'])->name('orders.success');
+    Route::get('/orders/success/{order:order_number}', [PublicOrderController::class, 'success'])->name('orders.success');
 
 
-    Route::get('/order/{order}/status', [PublicOrderController::class, 'paymentStatus'])->name('order.status');
+    Route::get('/order/{order:order_number}/status', [PublicOrderController::class, 'paymentStatus'])->name('order.status');
 });
 
 
@@ -88,6 +88,50 @@ Route::prefix('admin')->group(function () {
 
         Route::resource('orders', AdminOrderController::class, ['as' => 'admin']);
         Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    });
+});
+
+Route::prefix('admin')
+    ->as('admin.')
+    ->group(function () {
+
+    // 🔓 Admin Auth (TIDAK pakai middleware admin)
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // 🔒 Area Admin (WAJIB login admin)
+    Route::middleware('admin')->group(function () {
+
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
+
+        // Resource CRUD
+        Route::resource('users', UserController::class);
+        Route::resource('products', ProductController::class);
+        Route::resource('categories', CategoryController::class);
+        Route::resource('faqs', FaqController::class);
+        Route::resource('orders', AdminOrderController::class);
+
+        // Testimoni
+        Route::get('/testimoni', [TestimoniController::class, 'index'])
+            ->name('testimoni.index');
+        Route::post('/testimoni/{testimoni}/approve', [TestimoniController::class, 'approve'])
+            ->name('testimoni.approve');
+        Route::delete('/testimoni/{testimoni}/reject', [TestimoniController::class, 'reject'])
+            ->name('testimoni.reject');
+
+        // Contact
+        Route::get('/contact', [AdminContactController::class, 'index'])
+            ->name('contact.index');
+        Route::get('/contact/{message}', [AdminContactController::class, 'show'])
+            ->name('contact.show');
+        Route::delete('/contact/{message}', [AdminContactController::class, 'destroy'])
+            ->name('contact.destroy');
+
+        // Custom Order Action
+        Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
     });
 });
 

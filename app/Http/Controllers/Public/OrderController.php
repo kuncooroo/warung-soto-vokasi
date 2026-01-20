@@ -40,7 +40,7 @@ class OrderController extends Controller
             abort(403);
         }
 
-        return view('public.orders.success', compact('order'));
+        return view('public.success', compact('order'));
     }
 
     public function checkout(Request $request)
