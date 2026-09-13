@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
     protected $fillable = [
+        'user_id',
         'order_number',
         'customer_name',
         'customer_email',
@@ -33,7 +35,7 @@ class Order extends Model
     public function generateOrderNumber()
     {
         $prefix = 'ORD-' . date('YmdHis');
-        $this->order_number = $prefix . '-' . strtoupper(substr(md5(rand()), 0, 6));
+        $this->order_number = $prefix . '-' . Str::upper(Str::random(6));
         return $this->order_number;
     }
 

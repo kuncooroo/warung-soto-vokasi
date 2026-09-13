@@ -4,20 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimoni;
-use Illuminate\Http\Request;
 
 class TestimoniController extends Controller
 {
-    private function checkLogin()
-    {
-        if (!session()->has('admin_id')) {
-            return redirect()->route('admin.login');
-        }
-    }
-
     public function index()
     {
-        $this->checkLogin();
         $testimoni = Testimoni::all();
         return view('admin.testimoni.index', compact('testimoni'));
     }

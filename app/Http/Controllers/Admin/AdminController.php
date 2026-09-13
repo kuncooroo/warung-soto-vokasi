@@ -3,19 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreAdminRequest;
+use App\Http\Requests\Admin\UpdateAdminRequest;
 use App\Models\Admin;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    private function checkLogin()
-    {
-        if (!session()->has('admin_id')) {
-            return redirect()->route('admin.login');
-        }
-    }
-
     private function checkSuperAdmin()
     {
         $adminId = session()->get('admin_id');
@@ -27,7 +21,6 @@ class AdminController extends Controller
 
     public function index()
     {
-        $this->checkLogin();
         $this->checkSuperAdmin();
         $admins = Admin::all();
         return view('admin.admins.index', compact('admins'));
@@ -35,30 +28,20 @@ class AdminController extends Controller
 
     public function create()
     {
-        $this->checkLogin();
         $this->checkSuperAdmin();
         return view('admin.admins.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreAdminRequest $request)
     {
-        $this->checkLogin();
         $this->checkSuperAdmin();
-
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:admins',
-            'password' => 'required|min:6|confirmed',
-            'phone' => 'nullable|string',
-            'role' => 'required|in:admin,superadmin'
-        ]);
 
         Admin::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
-            'role' => $request->role
+            'role' => $request->role,
         ]);
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil ditambahkan');
@@ -66,28 +49,19 @@ class AdminController extends Controller
 
     public function edit(Admin $admin)
     {
-        $this->checkLogin();
         $this->checkSuperAdmin();
         return view('admin.admins.edit', compact('admin'));
     }
 
-    public function update(Request $request, Admin $admin)
+    public function update(UpdateAdminRequest $request, Admin $admin)
     {
-        $this->checkLogin();
         $this->checkSuperAdmin();
-
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:admins,email,' . $admin->id,
-            'phone' => 'nullable|string',
-            'role' => 'required|in:admin,superadmin'
-        ]);
 
         $admin->update([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'role' => $request->role
+            'role' => $request->role,
         ]);
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil diperbarui');
@@ -95,7 +69,6 @@ class AdminController extends Controller
 
     public function destroy(Admin $admin)
     {
-        $this->checkLogin();
         $this->checkSuperAdmin();
 
         if ($admin->id === session()->get('admin_id')) {

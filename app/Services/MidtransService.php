@@ -5,16 +5,18 @@ namespace App\Services;
 use Midtrans\Snap;
 use Midtrans\Config;
 use App\Models\Order;
+use App\Models\PaymentHistory;
+use Illuminate\Support\Facades\Log;
 
 class MidtransService
 {
     public function __construct()
     {
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$clientKey = env('MIDTRANS_CLIENT_KEY');
-        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
-        Config::$isSanitized = env('MIDTRANS_IS_SANITIZED', true);
-        Config::$is3ds = env('MIDTRANS_IS_3DS', true);
+        Config::$serverKey = config('midtrans.server_key');
+        Config::$clientKey = config('midtrans.client_key');
+        Config::$isProduction = config('midtrans.is_production');
+        Config::$isSanitized = config('midtrans.is_sanitized');
+        Config::$is3ds = config('midtrans.is_3ds');
     }
 
     public function createTransaction(Order $order)
@@ -62,14 +64,44 @@ class MidtransService
 
     public function handleCallback($notification)
     {
-        $orderId = $notification['order_id'];
-        $transactionStatus = $notification['transaction_status'];
+        $orderId = $notification['order_id'] ?? null;
+        $transactionStatus = $notification['transaction_status'] ?? null;
+        $statusCode = $notification['status_code'] ?? null;
+        $grossAmount = $notification['gross_amount'] ?? null;
+        $signatureKey = $notification['signature_key'] ?? null;
+        $transactionId = $notification['transaction_id'] ?? null;
         $fraudStatus = $notification['fraud_status'] ?? null;
+
+        if (!$orderId || !$transactionStatus || !$statusCode || !$grossAmount || !$signatureKey) {
+            return ['success' => false, 'message' => 'Incomplete notification', 'http_code' => 400];
+        }
 
         $order = Order::where('order_number', $orderId)->first();
 
         if (!$order) {
-            return ['success' => false, 'message' => 'Order not found'];
+            return ['success' => false, 'message' => 'Order not found', 'http_code' => 404];
+        }
+
+        $expectedSignature = hash(
+            'sha512',
+            $orderId . $statusCode . $grossAmount . config('midtrans.server_key')
+        );
+
+        if (!hash_equals($expectedSignature, $signatureKey)) {
+            Log::warning('Midtrans callback ditolak: signature tidak valid untuk order ' . $orderId);
+            return ['success' => false, 'message' => 'Invalid signature', 'http_code' => 403];
+        }
+
+        if (abs((float) $grossAmount - (float) $order->total_amount) > 0.001) {
+            Log::warning('Midtrans callback ditolak: nominal tidak sesuai untuk order ' . $orderId);
+            return ['success' => false, 'message' => 'Amount mismatch', 'http_code' => 400];
+        }
+
+        if ($transactionId) {
+            $existing = PaymentHistory::where('transaction_id', $transactionId)->first();
+            if ($existing) {
+                return ['success' => true, 'message' => 'Payment already processed', 'http_code' => 200];
+            }
         }
 
         if ($transactionStatus == 'capture') {
@@ -90,10 +122,26 @@ class MidtransService
             $order->payment_status = 'failed';
         }
 
-        $order->midtrans_transaction_id = $notification['transaction_id'];
+        $order->midtrans_transaction_id = $transactionId;
         $order->payment_method = $notification['payment_type'] ?? null;
+
+        if ($order->payment_status === 'completed' && $order->order_status === 'pending') {
+            $order->order_status = 'processing';
+        }
+
         $order->save();
 
-        return ['success' => true, 'message' => 'Payment status updated'];
+        if ($transactionId) {
+            PaymentHistory::create([
+                'order_id' => $order->id,
+                'transaction_id' => $transactionId,
+                'payment_method' => $notification['payment_type'] ?? 'unknown',
+                'status' => $order->payment_status,
+                'amount' => (float) $grossAmount,
+                'metadata' => $notification,
+            ]);
+        }
+
+        return ['success' => true, 'message' => 'Payment status updated', 'http_code' => 200];
     }
 }

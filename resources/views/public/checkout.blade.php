@@ -89,42 +89,41 @@
 
                             <div class="space-y-5">
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2 tracking-wide">Penerima</label>
+                                    <label class="form-label-bold">Penerima</label>
                                     <input type="text" name="customer_name" value="{{ $user->name }}"
-                                        class="w-full px-4 py-3 rounded-full bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9333A] focus:border-transparent transition placeholder-gray-400"
+                                        class="form-input-public"
                                         required placeholder="Nama Lengkap">
                                 </div>
 
                                 <div class="grid grid-cols-1 gap-5">
                                     <div>
-                                        <label
-                                            class="block text-sm font-bold text-gray-700 mb-2 tracking-wide">Email</label>
+                                        <label class="form-label-bold">Email</label>
                                         <input type="email" name="customer_email" value="{{ $user->email }}"
-                                            class="w-full px-4 py-3 rounded-full bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9333A] focus:border-transparent transition placeholder-gray-400"
+                                            class="form-input-public"
                                             required>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-bold text-gray-700 mb-2 tracking-wide">No.
+                                        <label class="form-label-bold">No.
                                             HP</label>
                                         <input type="text" name="customer_phone" value="{{ $user->phone ?? '' }}"
-                                            class="w-full px-4 py-3 rounded-full bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9333A] focus:border-transparent transition placeholder-gray-400"
+                                            class="form-input-public"
                                             required placeholder="08...">
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2 tracking-wide">Alamat
+                                    <label class="form-label-bold">Alamat
                                         Lengkap</label>
                                     <textarea name="customer_address" rows="3"
-                                        class="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9333A] focus:border-transparent transition placeholder-gray-400"
+                                        class="form-textarea"
                                         required placeholder="Jalan, No Rumah, Kota, Kode Pos">{{ $user->address ?? '' }}</textarea>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2 tracking-wide">Catatan
+                                    <label class="form-label-bold">Catatan
                                         (Opsional)</label>
                                     <textarea name="notes" rows="2"
-                                        class="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9333A] focus:border-transparent transition placeholder-gray-400"
+                                        class="form-textarea"
                                         placeholder="Pesan tambahan untuk penjual"></textarea>
                                 </div>
                             </div>
@@ -169,7 +168,7 @@
                             </div>
 
                             <button type="submit"
-                                class="w-full py-4 bg-[#A9333A] text-white font-bold rounded-full shadow-lg hover:bg-[#8E2B32] transition transform hover:-translate-y-1">
+                                class="btn-primary-public w-full">
                                 Bayar Sekarang
                             </button>
 

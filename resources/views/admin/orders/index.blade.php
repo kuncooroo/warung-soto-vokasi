@@ -5,12 +5,10 @@
 
 @section('content')
 
-<div class="mb-6 flex justify-between items-center">
-    <h3 class="text-xl font-bold text-gray-800">Kelola Pesanan</h3>
-</div>
+<x-admin-page-header title="Kelola Pesanan" />
 
 <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-    <table class="w-full">
+    <table class="admin-table w-full">
         <thead class="bg-green-600 text-white">
             <tr>
                 <th class="px-6 py-4 text-left text-sm font-semibold tracking-wide">Order #</th>
@@ -39,35 +37,16 @@
                 </td>
 
                 <td class="px-6 py-4">
-                    @if ($order->payment_status == 'paid')
-                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-md text-xs font-bold">
-                            PAID
-                        </span>
-                    @else
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-md text-xs font-bold">
-                            PENDING
-                        </span>
-                    @endif
+                    <x-status-badge :value="$order->payment_status" :variant="$order->payment_status" />
                 </td>
 
                 <td class="px-6 py-4">
-                    @php
-                        $colors = [
-                            'pending' => 'bg-gray-100 text-gray-600',
-                            'processing' => 'bg-blue-100 text-blue-600',
-                            'completed' => 'bg-green-100 text-green-600',
-                            'cancelled' => 'bg-red-100 text-red-600',
-                        ];
-                    @endphp
-
-                    <span class="px-3 py-1 rounded-md text-xs font-bold {{ $colors[$order->order_status] ?? 'bg-gray-100 text-gray-600' }}">
-                        {{ ucfirst($order->order_status) }}
-                    </span>
+                    <x-status-badge :value="$order->order_status" :variant="$order->order_status" />
                 </td>
 
                 <td class="px-6 py-4 text-center">
                     <a href="{{ route('admin.orders.show', $order->id) }}"
-                        class="px-3 py-1 bg-green-600 text-white rounded-md text-xs font-semibold hover:bg-green-700 transition shadow-sm">
+                        class="admin-action-view">
                         Detail
                     </a>
                 </td>

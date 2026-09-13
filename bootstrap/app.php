@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'check.profile' => \App\Http\Middleware\CheckProfile::class,
     ]);
+        $middleware->validateCsrfTokens(except: [
+            'payment-callback',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

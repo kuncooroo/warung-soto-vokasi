@@ -1,15 +1,16 @@
 @extends('layouts.admin')
-{{-- Sesuaikan dengan nama layout utamamu --}}
 
 @section('title', 'Hasil Pencarian')
 @section('header', 'Hasil Pencarian')
 
 @section('content')
+    <x-admin-page-header title="Hasil Pencarian" />
+
     <div class="space-y-6">
         <p class="text-gray-600">Menampilkan hasil untuk: <span class="font-bold text-gray-800">"{{ $keyword }}"</span>
         </p>
 
-        <div class="bg-white rounded-xl shadow-sm p-6">
+        <x-admin-form-card>
             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 📦 Produk Ditemukan ({{ $products->count() }})
             </h3>
@@ -18,17 +19,18 @@
                     @foreach ($products as $product)
                         <li class="py-3 flex justify-between hover:bg-gray-50 px-2 rounded">
                             <span>{{ $product->name }}</span>
-                            <a href="{{ route('admin.products.edit', $product->id) }}"
-                                class="text-sm text-green-600 font-semibold">Lihat &rarr;</a>
+                            <a href="{{ route('admin.products.edit', $product->id) }}" class="admin-action-edit">
+                                Lihat &rarr;
+                            </a>
                         </li>
                     @endforeach
                 </ul>
             @else
-                <p class="text-gray-400 text-sm italic">Tidak ada produk ditemukan.</p>
+                <x-empty-state title="Tidak ada produk ditemukan" message="Tidak ada produk yang cocok dengan kata kunci pencarian." icon="product" />
             @endif
-        </div>
+        </x-admin-form-card>
 
-        <div class="bg-white rounded-xl shadow-sm p-6">
+        <x-admin-form-card>
             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 👤 User Ditemukan ({{ $users->count() }})
             </h3>
@@ -40,17 +42,18 @@
                                 <p class="font-medium text-gray-800">{{ $user->name }}</p>
                                 <p class="text-xs text-gray-500">{{ $user->email }}</p>
                             </div>
-                            <a href="{{ route('admin.users.edit', $user->id) }}"
-                                class="text-sm text-green-600 font-semibold">Detail &rarr;</a>
+                            <a href="{{ route('admin.users.edit', $user->id) }}" class="admin-action-view">
+                                Detail &rarr;
+                            </a>
                         </li>
                     @endforeach
                 </ul>
             @else
-                <p class="text-gray-400 text-sm italic">Tidak ada user ditemukan.</p>
+                <x-empty-state title="Tidak ada user ditemukan" message="Tidak ada user yang cocok dengan kata kunci pencarian." icon="user" />
             @endif
-        </div>
+        </x-admin-form-card>
 
-        <div class="bg-white rounded-xl shadow-sm p-6">
+        <x-admin-form-card>
             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 🛒 Order Ditemukan ({{ $orders->count() }})
             </h3>
@@ -68,16 +71,15 @@
                                 </span>
                             </div>
 
-                            <a href="{{ route('admin.orders.show', $order->id) }}"
-                                class="text-sm bg-green-50 text-green-600 py-1 px-3 rounded-lg font-semibold hover:bg-green-100 transition">
+                            <a href="{{ route('admin.orders.show', $order->id) }}" class="admin-action-view">
                                 Cek Order &rarr;
                             </a>
                         </li>
                     @endforeach
                 </ul>
             @else
-                <p class="text-gray-400 text-sm italic">Tidak ada order dengan nomor atau nama tersebut.</p>
+                <x-empty-state title="Tidak ada order ditemukan" message="Tidak ada order dengan nomor atau nama tersebut." icon="order" />
             @endif
-        </div>
+        </x-admin-form-card>
     </div>
 @endsection

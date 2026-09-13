@@ -6,23 +6,23 @@
 
     <section class="relative h-[600px] flex items-center justify-center text-center bg-gray-900">
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/home/slider.png') }}" alt="Background Warung"
+            <img src="{{ asset($banner->background_image ?? 'images/home/slider.png') }}" alt="Background Warung"
                 class="w-full h-full object-cover opacity-60">
             <div class="absolute inset-0 bg-black/5"></div>
         </div>
 
         <div class="relative z-10 max-w-4xl px-4 text-white mt-10">
             <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 leading-tight tracking-wide">
-                Kelezatan Otentik,<br>Disajikan Hangat.
+                {!! $banner->title ?? 'Kelezatan Otentik,<br>Disajikan Hangat.' !!}
             </h1>
 
             <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                Temukan cita rasa soto warisan yang tak terlupakan di Soto Vokasi.
+                {{ $banner->subtitle ?? 'Temukan cita rasa soto warisan yang tak terlupakan di Soto Vokasi.' }}
             </p>
 
-            <a href="{{ route('menu') }}"
+            <a href="{{ $banner->button_url ?? route('menu') }}"
                 class="inline-block bg-[#D98718] hover:bg-[#b87314] text-white text-base font-bold py-3 px-10 rounded-full transition duration-300 shadow-lg transform hover:-translate-y-1">
-                Explore Menu
+                {{ $banner->button_text ?? 'Explore Menu' }}
             </a>
         </div>
     </section>
@@ -419,9 +419,7 @@
             </div>
         @else
             <div class="max-w-7xl mx-auto px-4">
-                <div class="text-center py-12 text-gray-500 bg-white rounded-xl border border-dashed border-gray-300">
-                    Belum ada testimoni.
-                </div>
+                <x-empty-state title="Belum ada testimoni" message="Belum ada testimoni yang masuk." icon="user" />
             </div>
         @endif
     </section>

@@ -6,7 +6,7 @@
         <div class="bg-gradient-to-br from-gray-50 to-white p-6 rounded-xl border border-gray-100 space-y-6">
 
             <div>
-                <label for="update_password_current_password" class="block text-sm font-semibold text-gray-700 mb-4">
+                <label for="update_password_current_password" class="form-label">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-2 text-[#D98718]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -19,9 +19,7 @@
 
                 <div class="relative">
                     <input id="update_password_current_password" name="current_password" type="password"
-                        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl 
-               focus:ring-2 focus:ring-[#D98718] focus:border-[#D98718] 
-               focus:outline-none transition-all duration-300 text-gray-900"
+                        class="form-input w-full pl-11 pr-4 py-3"
                         autocomplete="current-password" placeholder="Masukkan password saat ini" />
 
                     <div class="absolute left-4 top-1/2 -translate-y-1/2 text-[#D98718]">
@@ -35,7 +33,7 @@
             </div>
 
             <div>
-                <label for="update_password_password" class="block text-sm font-semibold text-gray-700 mb-4">
+                <label for="update_password_password" class="form-label">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-2 text-[#D98718]" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -49,9 +47,7 @@
 
                 <div class="relative">
                     <input id="update_password_password" name="password" type="password"
-                        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl
-               focus:ring-2 focus:ring-[#D98718] focus:border-[#D98718]
-               focus:outline-none transition-all duration-300 text-gray-900"
+                        class="form-input w-full pl-11 pr-4 py-3"
                         autocomplete="new-password" placeholder="Masukkan password baru (min. 8 karakter)" />
 
                     <div class="absolute left-4 top-1/2 -translate-y-1/2 text-[#D98718]">
@@ -77,7 +73,7 @@
 
             <div>
                 <label for="update_password_password_confirmation"
-                    class="block text-sm font-semibold text-gray-700 mb-4">
+                    class="form-label">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-2 text-[#D98718]" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -91,9 +87,7 @@
 
                 <div class="relative">
                     <input id="update_password_password_confirmation" name="password_confirmation" type="password"
-                        class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl
-               focus:ring-2 focus:ring-[#D98718] focus:border-[#D98718]
-               focus:outline-none transition-all duration-300 text-gray-900"
+                        class="form-input w-full pl-11 pr-4 py-3"
                         autocomplete="new-password" placeholder="Ulangi password baru" />
 
                     <div class="absolute left-4 top-1/2 -translate-y-1/2 text-[#D98718]">
@@ -111,8 +105,7 @@
         </div>
 
         <div class="flex items-center justify-between pt-4">
-            <button type="submit"
-                class="inline-flex items-center px-6 py-3 bg-[#D98718] hover:bg-[#c67614] text-white font-bold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 focus:ring-4 focus:ring-[#D98718]/20">
+            <button type="submit" class="btn-primary inline-flex items-center px-6 py-3">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
@@ -120,16 +113,7 @@
             </button>
 
             @if (session('status') === 'password-updated')
-                <div x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 transform scale-90"
-                    x-transition:enter-end="opacity-100 transform scale-100" x-init="setTimeout(() => show = false, 3000)"
-                    class="flex items-center px-4 py-2 bg-green-50 border border-green-200 text-green-700 rounded-xl">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span class="text-sm font-medium">Password berhasil diubah!</span>
-                </div>
+                <x-toast type="success" message="Password berhasil diubah!" />
             @endif
         </div>
 

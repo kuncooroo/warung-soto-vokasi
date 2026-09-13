@@ -3,16 +3,19 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Public\StoreOrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Services\MidtransService;
+use App\Notifications\NewOrderNotification;
 use Illuminate\Http\Request;
-// Tambahkan Import Ini
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderConfirmationMail;
 use App\Mail\PaymentSuccessMail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -25,20 +28,31 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::where('customer_email', auth()->user()->email)
+        $orders = Order::with('items')
+            ->where('user_id', auth()->id())
+            ->orWhere(function ($q) {
+                $q->whereNull('user_id')->where('customer_email', auth()->user()->email);
+            })
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10);
 
         return view('public.orders.index', [
             'orders' => $orders
         ]);
     }
 
+    public function show(Order $order)
+    {
+        abort_unless($this->belongsToUser($order), 403);
+
+        return view('public.orders.show', [
+            'order' => $order->load('items.product'),
+        ]);
+    }
+
     public function success(Order $order)
     {
-        if ($order->customer_email !== auth()->user()->email) {
-            abort(403);
-        }
+        abort_unless($this->belongsToUser($order), 403);
 
         return view('public.success', compact('order'));
     }
@@ -55,7 +69,7 @@ class OrderController extends Controller
         $totalAmount = 0;
 
         foreach ($cartData as $item) {
-            $product = Product::find($item['id']);
+            $product = Product::where('is_active', true)->find($item['id']);
 
             if ($product) {
                 $products[] = [
@@ -75,54 +89,87 @@ class OrderController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
-        $request->validate([
-            'customer_name' => 'required|string',
-            'customer_email' => 'required|email',
-            'customer_phone' => 'required|string',
-            'customer_address' => 'required|string',
-            'items' => 'required|json',
-            'notes' => 'nullable|string'
-        ]);
-
         $items = json_decode($request->items, true);
+
+        if (!is_array($items) || count($items) === 0 || count($items) > 50) {
+            return response()->json(['success' => false, 'message' => 'Keranjang kosong atau terlalu banyak item'], 422);
+        }
+
+        $resolvedItems = [];
         $totalAmount = 0;
 
         foreach ($items as $item) {
-            $product = Product::find($item['product_id']);
+            $product = Product::where('is_active', true)->find($item['product_id'] ?? null);
             if (!$product) {
                 return response()->json(['success' => false, 'message' => 'Product not found'], 404);
             }
-            $totalAmount += $product->price * $item['quantity'];
+
+            $quantity = (int) ($item['quantity'] ?? 0);
+            if ($quantity < 1 || $quantity > 99) {
+                return response()->json(['success' => false, 'message' => 'Quantity tidak valid'], 422);
+            }
+
+            if ($product->stock !== null && $quantity > $product->stock) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Stok {$product->name} tidak mencukupi (sisa {$product->stock})"
+                ], 422);
+            }
+
+            $resolvedItems[] = [
+                'product' => $product,
+                'quantity' => $quantity,
+            ];
+
+            $totalAmount += $product->price * $quantity;
         }
 
-        $order = new Order();
-        $order->generateOrderNumber();
-        $order->customer_name = $request->customer_name;
-        $order->customer_email = $request->customer_email;
-        $order->customer_phone = $request->customer_phone;
-        $order->customer_address = $request->customer_address;
-        $order->total_amount = $totalAmount;
-        $order->notes = $request->notes;
-        $order->payment_status = 'pending';
-        $order->save();
+        $order = DB::transaction(function () use ($request, $resolvedItems, $totalAmount) {
+            $order = new Order();
+            $order->generateOrderNumber();
+            $order->user_id = auth()->id();
+            $order->customer_name = $request->customer_name;
+            $order->customer_email = $request->customer_email;
+            $order->customer_phone = $request->customer_phone;
+            $order->customer_address = $request->customer_address;
+            $order->total_amount = $totalAmount;
+            $order->notes = $request->notes;
+            $order->payment_status = 'pending';
+            $order->save();
 
-        foreach ($items as $item) {
-            $product = Product::find($item['product_id']);
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'quantity' => $item['quantity'],
-                'price' => $product->price,
-                'subtotal' => $product->price * $item['quantity']
-            ]);
+            foreach ($resolvedItems as $item) {
+                $product = $item['product'];
+                $quantity = $item['quantity'];
+
+                if ($product->stock !== null) {
+                    $product->decrement('stock', $quantity);
+                }
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $quantity,
+                    'price' => $product->price,
+                    'subtotal' => $product->price * $quantity
+                ]);
+            }
+
+            return $order;
+        });
+
+        try {
+            Mail::to($order->customer_email)->queue(new OrderConfirmationMail($order));
+        } catch (\Exception $e) {
+            Log::error('Gagal mengirim email konfirmasi order: ' . $e->getMessage());
         }
 
         try {
-            Mail::to($order->customer_email)->send(new OrderConfirmationMail($order));
+            Notification::route('mail', config('mail.from.address'))
+                ->notify(new NewOrderNotification($order));
         } catch (\Exception $e) {
-            Log::error('Gagal mengirim email konfirmasi order: ' . $e->getMessage());
+            Log::error('Gagal mengirim notifikasi admin: ' . $e->getMessage());
         }
 
         $midtransResponse = $this->midtransService->createTransaction($order);
@@ -148,21 +195,16 @@ class OrderController extends Controller
         $result = $this->midtransService->handleCallback($notification);
 
         $orderId = $notification['order_id'] ?? null;
+        $httpCode = $result['http_code'] ?? (($result['success'] ?? false) ? 200 : 400);
 
-        if ($orderId) {
-
+        if ($orderId && ($result['success'] ?? false)) {
             Log::info('Callback received for Order ID: ' . $orderId);
 
-
-
-
-            $realOrderId = explode('-', $orderId)[0];
-
-            $order = Order::where('order_number', $realOrderId)->first();
+            $order = Order::where('order_number', $orderId)->first();
 
             if ($order && $order->payment_status == 'completed') {
                 try {
-                    Mail::to($order->customer_email)->send(new PaymentSuccessMail($order));
+                    Mail::to($order->customer_email)->queue(new PaymentSuccessMail($order));
                     Log::info('Email sukses bayar dikirim ke: ' . $order->customer_email);
                 } catch (\Exception $e) {
                     Log::error('Gagal mengirim email sukses bayar: ' . $e->getMessage());
@@ -172,17 +214,23 @@ class OrderController extends Controller
             }
         }
 
-        return response()->json($result);
+        return response()->json($result, $httpCode);
     }
 
-    public function paymentStatus($orderId)
+    public function paymentStatus(Order $order)
     {
-        $order = Order::findOrFail($orderId);
+        abort_unless($this->belongsToUser($order), 403);
 
         return response()->json([
             'success' => true,
             'payment_status' => $order->payment_status,
-            'order' => $order
+            'refreshed_at' => now()->toIso8601String(),
         ]);
+    }
+
+    private function belongsToUser(Order $order): bool
+    {
+        return $order->user_id === auth()->id()
+            || $order->customer_email === auth()->user()->email;
     }
 }

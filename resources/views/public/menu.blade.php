@@ -137,10 +137,9 @@
                             </div>
                         </div>
                     @empty
-                        <div class="col-span-full text-center py-20">
-                            <div class="text-6xl mb-4">🍽️</div>
-                            <h3 class="text-xl font-bold text-gray-800">Menu tidak ditemukan</h3>
-                            <p class="text-gray-500 mt-2">Coba kata kunci lain atau ganti kategori.</p>
+                        <div class="col-span-full">
+                            <x-empty-state title="Menu tidak ditemukan"
+                                message="Coba kata kunci lain atau ganti kategori." icon="product" />
                         </div>
                     @endforelse
                 </div>

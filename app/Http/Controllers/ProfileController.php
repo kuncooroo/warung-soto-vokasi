@@ -41,12 +41,13 @@ class ProfileController extends Controller
             $data['avatar'] = $path;
         }
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
         $user->fill($data);
         $user->save();
+
+        if ($request->has('email') && $user->wasChanged('email')) {
+            $user->email_verified_at = null;
+            $user->save();
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

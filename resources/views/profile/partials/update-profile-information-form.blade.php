@@ -70,7 +70,7 @@
         </div>
 
         <div>
-            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="name" class="form-label">
                 <span class="flex items-center">
                     <svg class="w-4 h-4 mr-2 text-[#D98718]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -80,18 +80,14 @@
                 </span>
             </label>
             <input id="name" name="name" type="text"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl 
-                focus:ring-2 focus:ring-[#D98718] 
-                focus:border-[#D98718] 
-                focus:outline-none
-                transition-all duration-300 text-gray-900"
+                class="form-input w-full px-4 py-3"
                 value="{{ old('name', $user->name) }}" required autofocus autocomplete="name"
                 placeholder="Masukkan nama lengkap Anda" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
-            <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="phone" class="form-label">
                 <span class="flex items-center">
                     <svg class="w-4 h-4 mr-2 text-[#D98718]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -102,17 +98,13 @@
                 </span>
             </label>
             <input id="phone" name="phone" type="text"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl 
-                focus:ring-2 focus:ring-[#D98718] 
-                focus:border-[#D98718] 
-                focus:outline-none
-                transition-all duration-300 text-gray-900"
+                class="form-input w-full px-4 py-3"
                 value="{{ old('phone', $user->phone) }}" placeholder="Contoh: 08123456789" />
             <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
 
         <div>
-            <label for="address" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="address" class="form-label">
                 <span class="flex items-center">
                     <svg class="w-4 h-4 mr-2 text-[#D98718]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -125,17 +117,13 @@
                 </span>
             </label>
             <textarea id="address" name="address" rows="3"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl 
-                focus:ring-2 focus:ring-[#D98718] 
-                focus:border-[#D98718] 
-                focus:outline-none
-                transition-all duration-300 text-gray-900"
+                class="form-input w-full px-4 py-3"
                 placeholder="Masukkan alamat lengkap Anda">{{ old('address', $user->address) }}</textarea>
             <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
         <div>
-            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="email" class="form-label">
                 <span class="flex items-center">
                     <svg class="w-4 h-4 mr-2 text-[#D98718]" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
@@ -147,11 +135,7 @@
                 </span>
             </label>
             <input id="email" name="email" type="email"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl 
-                focus:ring-2 focus:ring-[#D98718] 
-                focus:border-[#D98718] 
-                focus:outline-none
-                transition-all duration-300 text-gray-900"
+                class="form-input w-full px-4 py-3"
                 value="{{ old('email', $user->email) }}" required autocomplete="username"
                 placeholder="email@example.com" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
@@ -187,8 +171,7 @@
 
         <div class="flex items-center justify-between pt-4 border-t border-gray-100">
             <div class="flex items-center gap-3">
-                <button type="submit"
-                    class="inline-flex items-center px-6 py-3 bg-[#D98718] hover:bg-[#b87314] text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 focus:ring-4 focus:ring-[#D98718]/20">
+                <button type="submit" class="btn-primary inline-flex items-center px-6 py-3">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                         </path>
@@ -197,19 +180,7 @@
                 </button>
 
                 @if (session('status') === 'profile-updated')
-                    <div x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 transform scale-90"
-                        x-transition:enter-end="opacity-100 transform scale-100"
-                        x-transition:leave="transition ease-in duration-300"
-                        x-transition:leave-start="opacity-100 transform scale-100"
-                        x-transition:leave-end="opacity-0 transform scale-90" x-init="setTimeout(() => show = false, 3000)"
-                        class="flex items-center px-4 py-2 bg-green-50 border border-green-200 text-green-700 rounded-xl">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span class="text-sm font-medium">Perubahan berhasil disimpan!</span>
-                    </div>
+                    <x-toast type="success" message="Perubahan berhasil disimpan!" />
                 @endif
             </div>
         </div>

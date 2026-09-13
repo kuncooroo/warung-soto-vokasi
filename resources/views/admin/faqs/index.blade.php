@@ -4,14 +4,7 @@
 @section('header', 'Kelola FAQ')
 
 @section('content')
-    <div class="mb-6 flex justify-between items-center">
-        <h3 class="text-xl font-bold text-gray-800">Daftar FAQ</h3>
-
-        <a href="{{ route('admin.faqs.create') }}"
-            class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition shadow-sm flex items-center gap-2">
-            <span>+</span> Tambah FAQ
-        </a>
-    </div>
+    <x-admin-page-header title="Daftar FAQ" actionUrl="{{ route('admin.faqs.create') }}" actionLabel="Tambah FAQ" />
 
     <div class="space-y-4">
         @forelse($faqs as $faq)
@@ -28,27 +21,37 @@
                     </div>
 
                     <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="flex flex-col gap-1 mr-1">
+                            <form action="{{ route('admin.faqs.move', [$faq, 'up']) }}" method="POST">
+                                @csrf
+                                <button type="submit" title="Naik" {{ $loop->first ? 'disabled' : '' }}
+                                    class="w-7 h-7 flex items-center justify-center rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-admin-600 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                            <form action="{{ route('admin.faqs.move', [$faq, 'down']) }}" method="POST">
+                                @csrf
+                                <button type="submit" title="Turun" {{ $loop->last ? 'disabled' : '' }}
+                                    class="w-7 h-7 flex items-center justify-center rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-admin-600 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                         <a href="{{ route('admin.faqs.edit', $faq) }}"
-                            class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-md text-xs font-bold hover:bg-yellow-200 transition">
+                            class="admin-action-edit">
                             Edit
                         </a>
 
-                        <form action="{{ route('admin.faqs.destroy', $faq) }}" method="POST" class="inline"
-                            onclick="return confirm('Yakin hapus FAQ ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-bold hover:bg-red-200 transition">
-                                Hapus
-                            </button>
-                        </form>
+                        <x-confirm-delete id="delete-faq-{{ $faq->id }}" action="{{ route('admin.faqs.destroy', $faq) }}" title="Hapus FAQ" message="Yakin hapus FAQ ini?" />
                     </div>
                 </div>
             </div>
         @empty
-            <div class="bg-white p-12 rounded-xl shadow-sm text-center border border-gray-100">
-                <p class="text-gray-500 mt-2">Belum ada FAQ yang ditambahkan.</p>
-            </div>
+            <x-empty-state title="Belum ada FAQ" message="Belum ada FAQ yang ditambahkan." icon="faq" />
         @endforelse
     </div>
 @endsection

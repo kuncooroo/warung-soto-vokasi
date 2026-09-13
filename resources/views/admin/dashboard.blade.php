@@ -3,9 +3,11 @@
 @section('title', 'Dashboard')
 
 @section('content')
+    <x-admin-page-header title="Dashboard" />
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
+        <div class="admin-card flex items-center">
             <div class="rounded-full p-4 bg-purple-50 text-purple-600 mr-4 flex-shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -19,7 +21,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
+        <div class="admin-card flex items-center">
             <div class="rounded-full p-4 bg-green-50 text-green-600 mr-4 flex-shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -32,7 +34,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
+        <div class="admin-card flex items-center">
             <div class="rounded-full p-4 bg-yellow-50 text-yellow-500 mr-4 flex-shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -45,7 +47,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
+        <div class="admin-card flex items-center">
             <div class="rounded-full p-4 bg-red-50 text-red-500 mr-4 flex-shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -58,7 +60,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
+        <div class="admin-card flex items-center">
             <div class="rounded-full p-4 bg-indigo-50 text-indigo-500 mr-4 flex-shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -71,7 +73,7 @@
                 <p class="text-gray-400 text-xs font-medium">Pendapatan</p>
             </div>
         </div>
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
+        <div class="admin-card flex items-center">
             <div class="rounded-full p-4 bg-green-50 text-green-600 mr-4 flex-shrink-0">
                 <span class="text-2xl">🍽️</span>
             </div>
@@ -81,7 +83,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
+        <div class="admin-card flex items-center">
             <div class="rounded-full p-4 bg-yellow-50 text-yellow-500 mr-4 flex-shrink-0">
                 <span class="text-2xl">⭐</span>
             </div>
@@ -91,7 +93,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center">
+        <div class="admin-card flex items-center">
             <div class="rounded-full p-4 bg-blue-50 text-blue-500 mr-4 flex-shrink-0">
                 <span class="text-2xl">📧</span>
             </div>
@@ -104,7 +106,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <x-admin-form-card>
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h4 class="font-bold text-gray-800">Order 7 Hari Terakhir</h4>
@@ -112,58 +114,54 @@
                 </div>
             </div>
             <div id="dailyOrdersChart"></div>
-        </div>
+        </x-admin-form-card>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <x-admin-form-card>
             <div class="flex justify-between items-center mb-6">
                 <h4 class="font-bold text-gray-800">Pendapatan Bulanan</h4>
             </div>
             <div id="revenueChart"></div>
-        </div>
+        </x-admin-form-card>
     </div>
 
-    <div class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+    <x-admin-form-card>
         <h3 class="text-xl font-bold text-gray-800 mb-2">Transaksi Terbaru</h3>
         <p class="text-gray-500 text-sm mb-6">Daftar transaksi yang baru masuk</p>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="admin-table">
                 <thead>
-                    <tr class="text-gray-400 text-sm border-b border-gray-100">
-                        <th class="p-4 font-semibold">Invoice</th>
-                        <th class="p-4 font-semibold">User</th>
-                        <th class="p-4 font-semibold">Total</th>
-                        <th class="p-4 font-semibold">Status</th>
-                        <th class="p-4 font-semibold">Tanggal</th>
+                    <tr>
+                        <th>Invoice</th>
+                        <th>User</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Tanggal</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm">
                     @foreach ($latestTransactions as $trx)
-                        <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                            <td class="p-4 text-gray-700 font-medium">{{ $trx->order_number }}</td>
-                            <td class="p-4 flex items-center gap-3">
+                        <tr class="border-b border-gray-50">
+                            <td class="text-gray-700 font-medium">{{ $trx->order_number }}</td>
+                            <td class="flex items-center gap-3">
                                 <div
                                     class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
                                     {{ substr($trx->customer_name ?? 'G', 0, 1) }}
                                 </div>
                                 <span class="text-gray-600">{{ $trx->customer_name ?? 'Guest' }}</span>
                             </td>
-                            <td class="p-4 text-gray-600 font-bold">Rp {{ number_format($trx->total_amount, 0, ',', '.') }}
+                            <td class="text-gray-600 font-bold">Rp {{ number_format($trx->total_amount, 0, ',', '.') }}
                             </td>
-                            <td class="p-4">
-                                <span
-                                    class="px-3 py-1 rounded-full text-xs font-medium 
-                            {{ $trx->payment_status == 'paid' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600' }}">
-                                    {{ ucfirst($trx->payment_status) }}
-                                </span>
+                            <td>
+                                <x-status-badge :value="$trx->payment_status" :variant="$trx->payment_status" />
                             </td>
-                            <td class="p-4 text-gray-500">{{ $trx->created_at->format('d M Y') }}</td>
+                            <td class="text-gray-500">{{ $trx->created_at->format('d M Y') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-    </div>
+    </x-admin-form-card>
 @endsection
 
 @section('scripts')

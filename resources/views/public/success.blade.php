@@ -41,9 +41,9 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ route('orders.index') }}" 
+                    <a href="{{ route('orders.show', $order->order_number) }}" 
                        class="inline-flex justify-center items-center px-8 py-3 border border-transparent text-base font-bold rounded-full text-white bg-[#A9333A] hover:bg-[#8E2B32] transition transform hover:-translate-y-1 shadow-lg">
-                        Lihat Pesanan Saya
+                        Lihat Status Pesanan
                     </a>
                     <a href="{{ route('menu') }}" 
                        class="inline-flex justify-center items-center px-8 py-3 border border-gray-300 text-base font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition">

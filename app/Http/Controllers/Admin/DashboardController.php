@@ -8,16 +8,13 @@ use App\Models\User;
 use App\Models\Testimoni;
 use App\Models\ContactMessage;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        if (!session()->has('admin_id')) {
-            return redirect()->route('admin.login');
-        }
-
         $totalOrders       = Order::count();
         $todayOrders       = Order::whereDate('created_at', today())->count();
         $totalUsers        = User::count();
@@ -26,7 +23,7 @@ class DashboardController extends Controller
         $totalTestimoni    = Testimoni::count();
         $totalMessages     = ContactMessage::where('is_read', false)->count();
 
-        $totalRevenue = Order::where('payment_status', 'paid')->sum('total_amount');
+        $totalRevenue = Order::where('payment_status', 'completed')->sum('total_amount');
 
         $dailyOrdersRaw = Order::select(
             DB::raw('DATE(created_at) as date'),
@@ -43,7 +40,7 @@ class DashboardController extends Controller
             $dailyOrders[$day] = $dailyOrdersRaw[$day] ?? 0;
         }
 
-        $monthlyRevenueRaw = Order::where('payment_status', 'paid')
+        $monthlyRevenueRaw = Order::where('payment_status', 'completed')
         ->select(
             DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
             DB::raw('SUM(total_amount) as total')
@@ -69,7 +66,33 @@ class DashboardController extends Controller
             'totalProducts'      => $totalProducts,
             'totalTestimoni'     => $totalTestimoni,
             'totalMessages'      => $totalMessages,
-            'latestTransactions' => Order::latest()->take(7)->get(),
+            'latestTransactions' => Order::with('items')->latest()->take(7)->get(),
         ]);
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = trim($request->query('search', ''));
+
+        $products = collect();
+        $users = collect();
+        $orders = collect();
+
+        if ($keyword !== '') {
+            $products = Product::where('name', 'like', "%{$keyword}%")
+                ->orWhere('description', 'like', "%{$keyword}%")
+                ->get();
+
+            $users = User::where('name', 'like', "%{$keyword}%")
+                ->orWhere('email', 'like', "%{$keyword}%")
+                ->get();
+
+            $orders = Order::where('order_number', 'like', "%{$keyword}%")
+                ->orWhere('customer_name', 'like', "%{$keyword}%")
+                ->limit(20)
+                ->get();
+        }
+
+        return view('admin.search_results', compact('keyword', 'products', 'users', 'orders'));
     }
 }

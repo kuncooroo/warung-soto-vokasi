@@ -3,56 +3,40 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreFaqRequest;
+use App\Http\Requests\Admin\UpdateFaqRequest;
 use App\Models\Faq;
-use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
-    private function checkLogin()
-    {
-        if (!session()->has('admin_id')) {
-            return redirect()->route('admin.login');
-        }
-    }
-
     public function index()
     {
-        $this->checkLogin();
         $faqs = Faq::orderBy('order')->get();
         return view('admin.faqs.index', compact('faqs'));
     }
 
     public function create()
     {
-        $this->checkLogin();
         return view('admin.faqs.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreFaqRequest $request)
     {
-        $request->validate([
-            'question' => 'required|string',
-            'answer' => 'required|string'
+        Faq::create([
+            ...$request->validated(),
+            'order' => Faq::max('order') + 1,
         ]);
-
-        Faq::create($request->all());
         return redirect()->route('admin.faqs.index')->with('success', 'FAQ berhasil ditambahkan');
     }
 
     public function edit(Faq $faq)
     {
-        $this->checkLogin();
         return view('admin.faqs.edit', compact('faq'));
     }
 
-    public function update(Request $request, Faq $faq)
+    public function update(UpdateFaqRequest $request, Faq $faq)
     {
-        $request->validate([
-            'question' => 'required|string',
-            'answer' => 'required|string'
-        ]);
-
-        $faq->update($request->all());
+        $faq->update($request->validated());
         return redirect()->route('admin.faqs.index')->with('success', 'FAQ berhasil diperbarui');
     }
 
@@ -60,5 +44,22 @@ class FaqController extends Controller
     {
         $faq->delete();
         return redirect()->route('admin.faqs.index')->with('success', 'FAQ berhasil dihapus');
+    }
+
+    public function move(Faq $faq, string $direction)
+    {
+        abort_unless(in_array($direction, ['up', 'down']), 422);
+
+        $neighbor = $direction === 'up'
+            ? Faq::where('order', '<', $faq->order)->orderByDesc('order')->first()
+            : Faq::where('order', '>', $faq->order)->orderBy('order')->first();
+
+        if ($neighbor) {
+            [$faq->order, $neighbor->order] = [$neighbor->order, $faq->order];
+            $faq->save();
+            $neighbor->save();
+        }
+
+        return back();
     }
 }

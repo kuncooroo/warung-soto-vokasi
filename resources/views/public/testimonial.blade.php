@@ -6,23 +6,22 @@
 
     <section class="relative h-[600px] flex items-center justify-center text-center bg-gray-900">
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/home/slider.avif') }}" alt="Background Warung"
+            <img src="{{ asset($banner->background_image ?? 'images/home/slider.avif') }}" alt="Background Warung"
                 class="w-full h-full object-cover opacity-60">
             <div class="absolute inset-0 bg-black/60"></div>
         </div>
 
         <div class="relative z-10 max-w-4xl px-4 text-white mt-10">
             <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 leading-tight tracking-wide">
-                Bagikan Testimoni Anda
+                {!! $banner->title ?? 'Bagikan Testimoni Anda' !!}
             </h1>
 
             <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                Ceritakan pengalaman anda menikmati soto kami
+                {{ $banner->subtitle ?? 'Ceritakan pengalaman anda menikmati soto kami' }}
             </p>
 
-            <button onclick="openModal()"
-                class="px-10 py-4 bg-[#A9333A] text-white font-bold rounded-full hover:bg-[#8e2b32] transition-all shadow-lg transform hover:-translate-y-1">
-                Tulis Testimoni
+            <button onclick="openModal()" class="btn-primary-public">
+                {{ $banner->button_text ?? 'Tulis Testimoni' }}
             </button>
         </div>
     </section>
@@ -30,18 +29,10 @@
     <section class="py-10 bg-white">
         <div class="max-w-4xl mx-auto px-4">
             @if (session('success'))
-                <div
-                    class="p-6 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-4 shadow-sm">
-                    <div class="bg-green-100 p-2 rounded-full">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-lg">Terima Kasih!</h4>
-                        <p>{{ session('success') }}</p>
-                    </div>
-                </div>
+                <x-toast type="success">
+                    <h4 class="font-bold text-lg">Terima Kasih!</h4>
+                    <p>{{ session('success') }}</p>
+                </x-toast>
             @endif
         </div>
     </section>
@@ -51,34 +42,41 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
 
             @php
-                $gallery = [
-                    ['img' => 'sotovokasi.jpg'],
-                    ['img' => 'pakde.jpeg'],
-                    ['img' => 'grobak.webp'],
-                    ['img' => 'soto_1.jpg'],
-                    ['img' => 'paklek.jpeg'],
-                    ['img' => 'hole.jpeg'],
-                    ['img' => 'kk.jpeg'],
-                    ['img' => 'makan.jpg'],
-                    ['img' => 'pak.jpeg'],
-                    ['img' => 'soto.jpg'],
-                ];
+                $fallbackGallery = collect([
+                    (object) ['image' => 'images/gallery/sotovokasi.jpg'],
+                    (object) ['image' => 'images/gallery/pakde.jpeg'],
+                    (object) ['image' => 'images/gallery/grobak.webp'],
+                    (object) ['image' => 'images/gallery/soto_1.jpg'],
+                    (object) ['image' => 'images/gallery/paklek.jpeg'],
+                    (object) ['image' => 'images/gallery/hole.jpeg'],
+                    (object) ['image' => 'images/gallery/kk.jpeg'],
+                    (object) ['image' => 'images/gallery/makan.jpg'],
+                    (object) ['image' => 'images/gallery/pak.jpeg'],
+                    (object) ['image' => 'images/gallery/soto.jpg'],
+                ]);
+                $displayGalleries = $galleries->isNotEmpty() ? $galleries : $fallbackGallery;
             @endphp
 
-            @foreach ($gallery as $index => $g)
+            @foreach ($displayGalleries as $index => $g)
                 <div class="{{ in_array($index, [0, 7]) ? 'col-span-2 row-span-2' : '' }}">
                     <div class="relative group overflow-hidden rounded-2xl
                                 {{ in_array($index, [0, 7]) ? 'h-[400px] md:h-[600px]' : 'h-[195px] md:h-[292px]' }}
                                 shadow-lg hover:shadow-2xl transition-all duration-300">
 
-                        <img src="{{ asset('images/gallery/' . $g['img']) }}"
-                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                        <img src="{{ asset($g->image) }}"
+                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="{{ $g->caption ?? 'Galeri' }}" />
 
                         <div class="absolute inset-0 
                                     bg-gradient-to-t from-black/70 via-black/40 to-black/10
                                     group-hover:opacity-100 opacity-80 
                                     transition-opacity duration-300">
                         </div>
+
+                        @if ($g->caption)
+                            <div class="absolute bottom-3 left-3 right-3">
+                                <p class="text-white text-sm font-medium drop-shadow">{{ $g->caption }}</p>
+                            </div>
+                        @endif
 
                     </div>
                 </div>
@@ -179,14 +177,14 @@
                         <p class="text-gray-500 mb-6 text-center text-sm">Pendapat Anda sangat berarti bagi kami.</p>
 
                         @if ($errors->any())
-                            <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-left">
+                            <x-toast type="error">
                                 <p class="font-bold mb-1">Ada kesalahan input:</p>
                                 <ul class="list-disc list-inside">
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
                                 </ul>
-                            </div>
+                            </x-toast>
                         @endif
 
                         <form action="{{ route('testimonial.store') }}" method="POST" enctype="multipart/form-data"
@@ -195,16 +193,14 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-1">Nama Lengkap</label>
-                                    <input type="text" name="name"
-                                        class="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9333A] transition"
+                                    <label class="form-label-bold">Nama Lengkap</label>
+                                    <input type="text" name="name" class="form-input-public"
                                         placeholder="John Doe" required value="{{ old('name') }}">
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-1">Email</label>
-                                    <input type="email" name="email"
-                                        class="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9333A] transition"
+                                    <label class="form-label-bold">Email</label>
+                                    <input type="email" name="email" class="form-input-public"
                                         placeholder="john@example.com" required value="{{ old('email') }}">
                                 </div>
                             </div>
@@ -227,22 +223,20 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Cerita Anda</label>
-                                <textarea name="message" rows="4"
-                                    class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A9333A] resize-none"
+                                <label class="form-label-bold">Cerita Anda</label>
+                                <textarea name="message" rows="4" class="form-textarea"
                                     placeholder="Bagaimana pengalaman Anda?" required>{{ old('message') }}</textarea>
                             </div>
 
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Foto (Opsional)</label>
+                                <label class="form-label-bold">Foto (Opsional)</label>
                                 <input type="file" name="image"
-                                    class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#A9333A]/10 file:text-[#A9333A] hover:file:bg-[#A9333A]/20 cursor-pointer"
+                                    class="form-input-public text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#A9333A]/10 file:text-[#A9333A] hover:file:bg-[#A9333A]/20 cursor-pointer"
                                     accept="image/*">
                             </div>
 
                             <div class="pt-2">
-                                <button type="submit"
-                                    class="w-full py-3 bg-[#A9333A] text-white font-bold rounded-lg hover:bg-[#8e2b32] transition-colors shadow-md">
+                                <button type="submit" class="btn-primary-public w-full">
                                     Kirim Testimoni
                                 </button>
                             </div>

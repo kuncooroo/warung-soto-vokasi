@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 
 @section('title', 'Edit User')
-@section('header', 'Edit User')
 
 @section('content')
-    <div class="bg-white rounded-xl shadow-sm p-8 w-full border border-gray-100">
+    <x-admin-page-header title="Edit User" />
 
+    <x-admin-form-card>
         <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-100">
             @if ($user->avatar)
                 <img src="{{ asset('storage/' . $user->avatar) }}"
@@ -31,59 +31,39 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">
-                        Nama Lengkap
-                    </label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}"
-                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none 
-                              focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition"
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="name" value="{{ old('name', $user->name) }}" class="form-input"
                         required>
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">
-                        Alamat Email
-                    </label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}"
-                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none 
-                              focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition"
+                    <label class="form-label">Alamat Email</label>
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" class="form-input"
                         required>
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">
+                    <label class="form-label">
                         Password Baru <span class="text-gray-400 font-normal normal-case">(Kosongkan jika tidak
                             diganti)</span>
                     </label>
-                    <input type="password" name="password"
-                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none 
-                              focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition"
+                    <input type="password" name="password" class="form-input"
                         placeholder="Masukkan password baru">
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">
-                        Nomor Telepon
-                    </label>
-                    <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
-                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none 
-                              focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition">
+                    <label class="form-label">Nomor Telepon</label>
+                    <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="form-input">
                 </div>
             </div>
 
             <div>
-                <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">
-                    Alamat Lengkap
-                </label>
-                <textarea name="address" rows="4"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none 
-                             focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition">{{ old('address', $user->address) }}</textarea>
+                <label class="form-label">Alamat Lengkap</label>
+                <textarea name="address" rows="4" class="form-textarea">{{ old('address', $user->address) }}</textarea>
             </div>
 
             <div>
-                <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">
-                    Ganti Foto Profil
-                </label>
+                <label class="form-label">Ganti Foto Profil</label>
 
                 <input type="file" name="avatar" accept="image/*"
                     class="block w-full text-sm text-gray-700
@@ -96,19 +76,15 @@
             </div>
 
             <div class="flex gap-4 pt-4 border-t border-gray-100">
-                <button type="submit"
-                    class="px-6 py-2.5 bg-green-600 text-white rounded-lg font-bold 
-                           hover:bg-green-700 transition shadow-sm hover:shadow-md">
+                <button type="submit" class="btn-primary">
                     Update User
                 </button>
 
-                <a href="{{ route('admin.users.index') }}"
-                    class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 
-                      rounded-lg font-bold hover:bg-gray-50 transition">
+                <a href="{{ route('admin.users.index') }}" class="btn-secondary">
                     Batal
                 </a>
             </div>
 
         </form>
-    </div>
+    </x-admin-form-card>
 @endsection

@@ -4,14 +4,13 @@
 @section('header', 'Detail Pesan')
 
 @section('content')
-    <div class="bg-white rounded-xl shadow-sm p-8 w-full border border-gray-100">
+    <x-admin-page-header title="Detail Pesan" />
+
+    <x-admin-form-card>
         <div class="border-b border-gray-100 pb-6 mb-6">
             <div class="flex justify-between items-start mb-4">
                 <h3 class="text-2xl font-bold text-gray-800">{{ $message->subject }}</h3>
-                <span
-                    class="px-3 py-1 rounded-full text-xs font-bold {{ $message->is_read ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
-                    {{ $message->is_read ? 'Dibaca' : 'Baru' }}
-                </span>
+                <x-status-badge :value="$message->is_read ? 'read' : 'unread'" :variant="$message->is_read ? 'success' : 'warning'" />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
@@ -42,15 +41,13 @@
         </div>
 
         <div class="flex gap-4 pt-4 border-t border-gray-100">
-            <a href="mailto:{{ $message->email }}"
-                class="px-6 py-2.5 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition shadow-sm hover:shadow-md flex items-center gap-2">
+            <a href="mailto:{{ $message->email }}" class="btn-primary">
                 <span>✉️</span> Balas Email
             </a>
 
-            <a href="{{ route('admin.contact.index') }}"
-                class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition">
+            <a href="{{ route('admin.contact.index') }}" class="btn-secondary">
                 Kembali
             </a>
         </div>
-    </div>
+    </x-admin-form-card>
 @endsection

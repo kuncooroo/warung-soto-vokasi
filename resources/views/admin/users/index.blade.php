@@ -5,17 +5,10 @@
 
 @section('content')
 
-<div class="mb-6 flex justify-between items-center">
-    <h3 class="text-xl font-bold text-gray-800">Kelola User</h3>
-
-    <a href="{{ route('admin.users.create') }}" 
-       class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition shadow-sm flex items-center gap-2">
-        <span>+</span> Tambah User
-    </a>
-</div>
+<x-admin-page-header title="Kelola User" actionUrl="{{ route('admin.users.create') }}" actionLabel="Tambah User" />
 
 <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-    <table class="w-full">
+    <table class="admin-table w-full">
         <thead class="bg-green-600 text-white">
             <tr>
                 <th class="px-6 py-4 text-left text-sm font-semibold tracking-wide">User</th>
@@ -59,20 +52,11 @@
                     <div class="flex justify-center items-center space-x-2">
 
                         <a href="{{ route('admin.users.edit', $user->id) }}" 
-                           class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-md text-xs font-bold hover:bg-yellow-200 transition">
+                           class="admin-action-edit">
                             Edit
                         </a>
 
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" 
-                              method="POST" 
-                              onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-bold hover:bg-red-200 transition">
-                                Hapus
-                            </button>
-                        </form>
+                        <x-confirm-delete id="delete-user-{{ $user->id }}" action="{{ route('admin.users.destroy', $user->id) }}" title="Hapus User" message="Apakah Anda yakin ingin menghapus user ini?" />
 
                     </div>
                 </td>
@@ -81,10 +65,7 @@
             @empty
             <tr>
                 <td colspan="4" class="px-6 py-8 text-center text-gray-500 bg-gray-50">
-                    <div class="flex flex-col items-center justify-center">
-                        <span class="text-2xl mb-2">👤</span>
-                        <p>Belum ada data user.</p>
-                    </div>
+                    <x-empty-state title="Belum ada data user" message="Belum ada data user." icon="user" />
                 </td>
             </tr>
             @endforelse

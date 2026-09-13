@@ -4,42 +4,35 @@
 @section('header', 'Detail Pesanan')
 
 @section('content')
-    <div class="mb-6 flex justify-between items-center">
-        <h3 class="text-xl font-bold text-gray-800">Detail Pesanan #{{ $order->id }}</h3>
-    </div>
+    <x-admin-page-header title="Detail Pesanan #{{ $order->id }}" />
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-
-                <div class="bg-green-600 px-6 py-4 border-b border-green-700">
-                    <h3 class="font-semibold text-white">Daftar Produk</h3>
-                </div>
-
-                <table class="w-full">
-                    <thead class="bg-green-50 text-green-700 font-semibold text-sm uppercase tracking-wide">
+            <x-admin-form-card title="Daftar Produk">
+                <table class="admin-table">
+                    <thead>
                         <tr>
-                            <th class="px-6 py-3 text-left">Produk</th>
-                            <th class="px-6 py-3 text-center">Jumlah</th>
-                            <th class="px-6 py-3 text-right">Harga Satuan</th>
-                            <th class="px-6 py-3 text-right">Total</th>
+                            <th>Produk</th>
+                            <th class="text-center">Jumlah</th>
+                            <th class="text-right">Harga Satuan</th>
+                            <th class="text-right">Total</th>
                         </tr>
                     </thead>
 
                     <tbody class="divide-y divide-gray-100">
                         @foreach ($order->items as $item)
-                            <tr class="hover:bg-green-50 transition">
-                                <td class="px-6 py-4 font-semibold text-gray-800">
+                            <tr>
+                                <td class="font-semibold text-gray-800">
                                     {{ $item->product->name }}
                                 </td>
-                                <td class="px-6 py-4 text-center">
+                                <td class="text-center">
                                     {{ $item->quantity }}
                                 </td>
-                                <td class="px-6 py-4 text-right text-gray-700">
+                                <td class="text-right text-gray-700">
                                     Rp {{ number_format($item->price, 0, ',', '.') }}
                                 </td>
-                                <td class="px-6 py-4 text-right font-bold text-gray-900">
+                                <td class="text-right font-bold text-gray-900">
                                     Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}
                                 </td>
                             </tr>
@@ -57,14 +50,12 @@
                         </tr>
                     </tfoot>
                 </table>
-            </div>
+            </x-admin-form-card>
         </div>
 
         <div class="space-y-6">
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-700 mb-4 border-b pb-2">Informasi Pemesan</h3>
-
+            <x-admin-form-card title="Informasi Pemesan">
                 <div class="space-y-3 text-sm">
                     <div>
                         <span class="block text-gray-500 text-xs uppercase">Nama Pelanggan</span>
@@ -81,11 +72,9 @@
                         <span class="font-semibold text-gray-900 leading-relaxed">{{ $order->customer_address }}</span>
                     </div>
                 </div>
-            </div>
+            </x-admin-form-card>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-700 mb-4 border-b pb-2">Update Status</h3>
-
+            <x-admin-form-card title="Update Status">
                 <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -93,22 +82,20 @@
                     <div class="space-y-4">
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status Pembayaran</label>
-                            <select name="payment_status"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-green-600 focus:ring-green-600 transition">
-                                <option value="pending" {{ $order->payment_status == 'pending' ? 'selected' : '' }}>Pending
-                                </option>
-                                <option value="paid" {{ $order->payment_status == 'paid' ? 'selected' : '' }}>Dibayar
-                                </option>
+                            <label class="form-label">Status Pembayaran</label>
+                            <select name="payment_status" class="form-select">
+                                <option value="pending" {{ $order->payment_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="completed" {{ $order->payment_status == 'completed' ? 'selected' : '' }}>Lunas</option>
+                                @if ($order->payment_status === 'failed')
+                                    <option value="failed" selected>Gagal</option>
+                                @endif
                             </select>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status Pesanan</label>
-                            <select name="status"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-green-600 focus:ring-green-600 transition">
-                                <option value="pending" {{ $order->order_status == 'pending' ? 'selected' : '' }}>Pending
-                                </option>
+                            <label class="form-label">Status Pesanan</label>
+                            <select name="status" class="form-select">
+                                <option value="pending" {{ $order->order_status == 'pending' ? 'selected' : '' }}>Pending</option>
                                 <option value="processing" {{ $order->order_status == 'processing' ? 'selected' : '' }}>
                                     Diproses</option>
                                 <option value="completed" {{ $order->order_status == 'completed' ? 'selected' : '' }}>
@@ -118,14 +105,13 @@
                             </select>
                         </div>
 
-                        <button type="submit"
-                            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition duration-200">
+                        <button type="submit" class="btn-primary w-full">
                             Simpan Perubahan
                         </button>
 
                     </div>
                 </form>
-            </div>
+            </x-admin-form-card>
 
         </div>
     </div>

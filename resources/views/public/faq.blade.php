@@ -47,9 +47,8 @@
 
                     </div>
                 @empty
-                    <div class="text-center py-12 border border-dashed border-gray-300 rounded-lg">
-                        <p class="text-gray-500">Belum ada pertanyaan yang tersedia.</p>
-                    </div>
+                    <x-empty-state title="Belum ada FAQ" message="Belum ada pertanyaan yang tersedia."
+                        icon="faq" />
                 @endforelse
 
             </div>

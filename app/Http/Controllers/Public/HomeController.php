@@ -7,17 +7,19 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Testimoni;
 use App\Models\Faq;
+use App\Models\Banner;
 
 class HomeController extends Controller
 {
     public function index()
     {
         $categories = Category::all();
-        $products = Product::with('category')->limit(6)->get();
+        $products = Product::with('category')->where('is_active', true)->limit(6)->get();
         $testimoni = Testimoni::where('is_approved', true)->get();
         $faqs = Faq::orderBy('order')->get();
+        $banner = Banner::active()->where('page', 'home')->latest('id')->first();
 
-        return view('public.home', compact('categories', 'products', 'testimoni', 'faqs'));
+        return view('public.home', compact('categories', 'products', 'testimoni', 'faqs', 'banner'));
     }
 
     public function about()

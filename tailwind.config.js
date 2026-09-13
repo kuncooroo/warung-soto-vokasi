@@ -13,7 +13,17 @@ export default {
         extend: {
             colors: {
                 primary: '#D98718',
+                'primary-hover': '#b87314',
+                secondary: '#A9333A',
+                'secondary-hover': '#8e2b32',
                 dark: '#383838',
+                admin: {
+                    DEFAULT: '#16a34a',
+                    50: '#f0fdf4',
+                    100: '#dcfce7',
+                    600: '#16a34a',
+                    700: '#15803d',
+                },
             },
             fontFamily: {
                 sans: ['Poppins', ...defaultTheme.fontFamily.sans],
